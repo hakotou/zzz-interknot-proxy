@@ -3,554 +3,963 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INTER-KNOT // FAIRY ACADEMIC PROXY</title>
+  <title>INTER-KNOT STUDY // ZZZ AI COMPANION</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     :root {
-      --bg-void: #090a0d;
-      --bg-panel: #13141a;
-      --bg-card: #1b1d26;
-      --bg-elevated: #242733;
+      --bg-canvas: #121318;
+      --bg-sidebar: #181a21;
+      --bg-surface: #20232d;
+      --bg-pill: #272b38;
       --zzz-lime: #D8FA00;
       --zzz-orange: #FF5500;
       --zzz-purple: #9D4EDD;
       --zzz-cyan: #00F0FF;
-      --text-main: #F4F5F8;
-      --text-dim: #8E92A4;
-      --border-hard: 2px solid #000000;
+      --text-primary: #F5F6FA;
+      --text-secondary: #9BA0B5;
+      --text-muted: #6C7185;
+      --border-ink: 2px solid #090a0d;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--bg-void);
-      color: var(--text-main);
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
       font-family: 'Space Grotesk', sans-serif;
       height: 100vh;
       display: flex;
       overflow: hidden;
       background-image:
-        radial-gradient(rgba(216, 250, 0, 0.08) 1px, transparent 1px),
-        linear-gradient(135deg, #090a0d 0%, #11131a 100%);
-      background-size: 20px 20px, 100% 100%;
+        radial-gradient(rgba(216, 250, 0, 0.06) 1px, transparent 1px),
+        linear-gradient(145deg, #101116 0%, #171922 100%);
+      background-size: 18px 18px, 100% 100%;
     }
 
+    /* Subtle ZZZ CRT scanlines */
     body::after {
       content: "";
       position: fixed;
       inset: 0;
-      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.14) 0px, rgba(0,0,0,0.14) 1px, transparent 1px, transparent 3px);
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.11) 0px, rgba(0,0,0,0.11) 1px, transparent 1px, transparent 3px);
       pointer-events: none;
-      z-index: 9999;
+      z-index: 999;
     }
 
+    /* LEFT SIDEBAR (Matches reference sidebar layout + ZZZ styling) */
     .sidebar {
-      width: 340px;
-      background: var(--bg-panel);
-      border-right: 3px solid #000;
+      width: 268px;
+      background: var(--bg-sidebar);
+      border-right: 3px solid #090a0d;
       display: flex;
       flex-direction: column;
-      padding: 16px;
-      gap: 14px;
-      z-index: 20;
-      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      padding: 14px 12px;
+      gap: 10px;
+      z-index: 30;
+      transition: transform 0.22s ease;
     }
 
-    .ik-header {
-      background: var(--zzz-lime);
-      color: #000;
-      padding: 12px 16px;
-      border: var(--border-hard);
-      box-shadow: 4px 4px 0 #000;
-      clip-path: polygon(0 0, 100% 0, 96% 100%, 0% 100%);
+    .brand-strip {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      background: var(--zzz-lime);
+      color: #090a0d;
+      padding: 8px 12px;
+      border: var(--border-ink);
+      box-shadow: 3px 3px 0 #090a0d;
+      clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
+      margin-bottom: 4px;
     }
 
-    .ik-title {
+    .brand-strip .logo-text {
       font-family: 'Anton', sans-serif;
       font-style: italic;
-      font-size: 1.65rem;
-      letter-spacing: 1px;
-      line-height: 1;
+      font-size: 1.3rem;
+      letter-spacing: 0.8px;
     }
 
-    .ik-ver {
-      background: #000;
+    .brand-strip .char-tag {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      background: #090a0d;
       color: var(--zzz-lime);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 3px 7px;
+      padding: 2px 6px;
       transform: skewX(-10deg);
     }
 
-    .btn-action {
-      background: var(--zzz-orange);
-      color: #000;
-      font-family: 'Chakra Petch', sans-serif;
-      font-weight: 700;
-      font-style: italic;
-      font-size: 0.95rem;
-      border: var(--border-hard);
-      box-shadow: 3px 3px 0 #000;
-      padding: 10px 14px;
-      cursor: pointer;
-      text-transform: uppercase;
-      clip-path: polygon(3% 0, 100% 0, 97% 100%, 0% 100%);
-      transition: all 0.12s ease;
-    }
-    .btn-action:hover { background: var(--zzz-lime); transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #000; }
-    .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .panel-label {
-      font-family: 'Chakra Petch', sans-serif;
-      font-weight: 700;
-      font-style: italic;
-      font-size: 0.82rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--zzz-lime);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .tracker-card {
-      background: var(--bg-card);
-      border: var(--border-hard);
-      box-shadow: 3px 3px 0 #000;
-      border-radius: 6px;
-      padding: 10px;
-      max-height: 175px;
-      overflow-y: auto;
-      font-size: 0.84rem;
-    }
-
-    .t-row {
-      background: #121318;
-      border-left: 4px solid var(--zzz-orange);
-      padding: 7px 9px;
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-    .t-row.grade { border-left-color: var(--zzz-purple); }
-
-    .badge-score {
-      background: var(--zzz-lime);
-      color: #000;
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
-      font-size: 0.75rem;
-      padding: 2px 6px;
-      border-radius: 3px;
-    }
-
-    .sync-pill {
-      background: #0d0e12;
-      border: 1px solid #2e3240;
+    .nav-btn {
+      width: 100%;
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid transparent;
+      border-radius: 8px;
       padding: 8px 10px;
-      border-radius: 6px;
-      font-size: 0.78rem;
-      color: var(--text-dim);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 9px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.12s, border-color 0.12s;
     }
-    .dot-live {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--zzz-cyan);
-      box-shadow: 0 0 8px var(--zzz-cyan);
-      display: inline-block; margin-right: 6px;
+    .nav-btn:hover { background: var(--bg-surface); border-color: rgba(216, 250, 0, 0.25); }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-canvas);
+      border: 1px solid #2f3445;
+      border-radius: 8px;
+      padding: 7px 10px;
+      color: var(--text-primary);
+      font-size: 0.84rem;
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--zzz-lime); }
+
+    .history-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 2px;
+      margin-top: 2px;
     }
 
-    .workspace {
+    .history-group-title {
+      font-family: 'Chakra Petch', sans-serif;
+      font-style: italic;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--zzz-orange);
+      padding: 10px 8px 4px;
+    }
+
+    .history-item {
+      width: 100%;
+      background: transparent;
+      color: var(--text-secondary);
+      border: none;
+      border-radius: 7px;
+      padding: 7px 10px;
+      font-size: 0.84rem;
+      text-align: left;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+    }
+    .history-item:hover { background: var(--bg-surface); color: var(--text-primary); }
+    .history-item.active {
+      background: rgba(216, 250, 0, 0.14);
+      color: var(--zzz-lime);
+      border-left: 3px solid var(--zzz-lime);
+      font-weight: 600;
+    }
+
+    .sidebar-footer {
+      border-top: 2px solid #090a0d;
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* MAIN AREA */
+    .main-area {
       flex: 1;
       display: flex;
       flex-direction: column;
       min-width: 0;
+      position: relative;
     }
 
-    .topbar {
-      height: 60px;
-      background: var(--bg-panel);
-      border-bottom: 3px solid #000;
+    .top-bar {
+      height: 52px;
+      padding: 0 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 20px;
-      gap: 12px;
+      border-bottom: 2px solid #090a0d;
+      background: rgba(20, 22, 29, 0.85);
     }
 
-    .top-title {
-      font-family: 'Anton', sans-serif;
-      font-style: italic;
-      font-size: 1.25rem;
-      letter-spacing: 1px;
-      color: #fff;
-    }
+    .top-left { display: flex; align-items: center; gap: 10px; }
 
-    .router-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      background: #000;
-      border: 1px solid var(--zzz-lime);
-      color: var(--zzz-lime);
-      padding: 5px 10px;
-      transform: skewX(-8deg);
-    }
-
-    .chat-stream {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .bubble-wrap {
-      display: flex;
-      gap: 12px;
-      max-width: 82%;
-    }
-    .bubble-wrap.user { align-self: flex-end; flex-direction: row-reverse; }
-    .bubble-wrap.bot { align-self: flex-start; }
-
-    .avatar {
-      width: 42px; height: 42px;
-      border: var(--border-hard);
-      box-shadow: 2px 2px 0 #000;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Anton', sans-serif;
-      font-style: italic;
-      font-size: 1.1rem;
-    }
-    .avatar.bot { background: var(--zzz-purple); color: #fff; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%); }
-    .avatar.user { background: var(--zzz-orange); color: #000; clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%); }
-
-    .bubble {
-      padding: 14px 18px;
-      border: var(--border-hard);
-      box-shadow: 4px 4px 0 #000;
-      line-height: 1.55;
-      font-size: 0.95rem;
-      overflow-wrap: anywhere;
-    }
-    .bubble.bot { background: var(--bg-card); color: var(--text-main); border-radius: 2px 12px 12px 12px; }
-    .bubble.user { background: var(--zzz-lime); color: #000; font-weight: 500; border-radius: 12px 2px 12px 12px; }
-
-    .bubble pre {
-      background: #0b0c10;
-      color: #e6edf3;
-      padding: 12px;
-      border-radius: 6px;
-      overflow-x: auto;
-      margin: 10px 0;
-      border: 1px solid #30363d;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-    }
-    .bubble table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.88rem; }
-    .bubble th, .bubble td { border: 1px solid #3c4052; padding: 6px 10px; text-align: left; }
-    .bubble th { background: #121318; color: var(--zzz-lime); }
-    .bubble img { max-width: 320px; border: 2px solid #000; border-radius: 6px; margin-top: 8px; display: block; }
-
-    .dock {
-      background: var(--bg-panel);
-      border-top: 3px solid #000;
-      padding: 14px 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .attachment-bar {
+    .mobile-menu-btn {
       display: none;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
-      color: var(--zzz-cyan);
-      background: #0d0e12;
-      padding: 5px 10px;
-      border-left: 3px solid var(--zzz-cyan);
-    }
-
-    .dock-row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    textarea {
-      flex: 1;
-      height: 52px;
-      background: #0c0d11;
-      border: 2px solid #2f3342;
-      border-radius: 6px;
-      color: #fff;
-      padding: 12px;
-      font-family: inherit;
-      font-size: 0.95rem;
-      resize: none;
-    }
-    textarea:focus { outline: none; border-color: var(--zzz-lime); }
-
-    .btn-tool {
-      height: 52px;
-      padding: 0 14px;
-      background: var(--bg-elevated);
+      background: var(--bg-surface);
       color: var(--zzz-lime);
-      border: var(--border-hard);
-      box-shadow: 2px 2px 0 #000;
-      font-family: 'Chakra Petch', sans-serif;
+      border: var(--border-ink);
+      border-radius: 6px;
+      padding: 5px 10px;
       font-weight: 700;
       cursor: pointer;
     }
-    .btn-tool:hover { background: #2f3342; }
 
-    .modal-bg {
+    .agent-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--bg-surface);
+      border: var(--border-ink);
+      box-shadow: 2px 2px 0 #090a0d;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      font-style: italic;
+      font-size: 0.8rem;
+      color: var(--zzz-lime);
+    }
+
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+
+    .mini-btn {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border: 1px solid #353a4d;
+      border-radius: 7px;
+      padding: 5px 10px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      font-size: 0.76rem;
+      cursor: pointer;
+    }
+    .mini-btn:hover { border-color: var(--zzz-lime); color: var(--zzz-lime); }
+
+    /* CENTER STAGE (Switches between Hero Welcome Screen & Chat Thread) */
+    .stage {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HERO / EMPTY STATE (Matches reference "What do you want to learn?" + Avatar + Input + Pills) */
+    .hero-screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 20px;
+      text-align: center;
+      max-width: 780px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .character-ring {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 3px solid var(--zzz-lime);
+      box-shadow: 0 0 0 3px #090a0d, 5px 5px 0 var(--zzz-purple);
+      overflow: hidden;
+      margin-bottom: 16px;
+      background: var(--bg-surface);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    .character-ring:hover { transform: scale(1.05) rotate(-2deg); }
+    .character-ring img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .hero-title {
+      font-family: 'Anton', sans-serif;
+      font-style: italic;
+      font-size: clamp(1.9rem, 3.8vw, 2.75rem);
+      letter-spacing: 0.6px;
+      color: var(--text-primary);
+      margin-bottom: 18px;
+      line-height: 1.08;
+    }
+    .hero-title span { color: var(--zzz-lime); }
+
+    /* PILL COMPOSER (Shared style with reference screenshot) */
+    .composer-card {
+      width: 100%;
+      max-width: 680px;
+      background: var(--bg-surface);
+      border: 2px solid #090a0d;
+      box-shadow: 4px 4px 0 #090a0d;
+      border-radius: 24px;
+      padding: 8px 10px 8px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .composer-card:focus-within {
+      border-color: var(--zzz-lime);
+      box-shadow: 4px 4px 0 var(--zzz-lime);
+    }
+
+    .file-chip {
+      display: none;
+      align-self: flex-start;
+      background: rgba(0, 240, 255, 0.12);
+      border: 1px solid var(--zzz-cyan);
+      color: var(--zzz-cyan);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+
+    .composer-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .plus-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--bg-pill);
+      color: var(--zzz-lime);
+      border: 1px solid #3c4257;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .plus-btn:hover { background: var(--zzz-lime); color: #090a0d; }
+
+    .prompt-field {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.96rem;
+      resize: none;
+      max-height: 120px;
+      min-height: 24px;
+      line-height: 1.4;
+      outline: none;
+    }
+
+    .send-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--zzz-orange);
+      color: #090a0d;
+      border: 2px solid #090a0d;
+      font-weight: 900;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.1s, background 0.12s;
+    }
+    .send-circle:hover { background: var(--zzz-lime); transform: scale(1.05); }
+    .send-circle:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* QUICK TOPIC PILLS BELOW HERO INPUT (Matches reference pill rows) */
+    .quick-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+      max-width: 720px;
+    }
+
+    .topic-pill {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border: 1px solid #353b4f;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .topic-pill:hover {
+      background: var(--zzz-lime);
+      color: #090a0d;
+      border-color: #090a0d;
+      transform: translateY(-1px);
+    }
+
+    /* ACTIVE CHAT THREAD */
+    .thread-view {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      padding: 22px 24px 12px;
+      gap: 18px;
+      max-width: 920px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .msg-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      width: 100%;
+    }
+    .msg-row.user { justify-content: flex-end; }
+    .msg-row.bot { justify-content: flex-start; }
+
+    .msg-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 2px solid #090a0d;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--zzz-purple);
+    }
+    .msg-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .msg-bubble {
+      max-width: 76%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      border: 2px solid #090a0d;
+      box-shadow: 3px 3px 0 #090a0d;
+      line-height: 1.55;
+      font-size: 0.94rem;
+      overflow-wrap: anywhere;
+    }
+
+    .msg-row.bot .msg-bubble {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border-top-left-radius: 4px;
+    }
+
+    .msg-row.user .msg-bubble {
+      background: var(--zzz-lime);
+      color: #090a0d;
+      font-weight: 500;
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg-bubble pre {
+      background: #0c0d12;
+      color: #e6edf3;
+      padding: 10px 12px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 8px 0;
+      border: 1px solid #2e3446;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.83rem;
+    }
+    .msg-bubble table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.86rem; }
+    .msg-bubble th, .msg-bubble td { border: 1px solid #3a4056; padding: 6px 10px; text-align: left; }
+    .msg-bubble th { background: #14161e; color: var(--zzz-lime); }
+    .msg-bubble img { max-width: 280px; border-radius: 8px; border: 2px solid #090a0d; margin-top: 8px; display: block; }
+
+    .bottom-dock {
+      display: none;
+      padding: 10px 20px 16px;
+      background: linear-gradient(to top, var(--bg-canvas) 75%, transparent);
+    }
+    .bottom-dock .composer-card { margin: 0 auto; }
+
+    /* SLIDE-OVER DRAWER FOR MEMORY (SCHEDULES & QUIZ MARKS) & NOTES */
+    .drawer-backdrop {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.85);
-      z-index: 100;
+      background: rgba(0,0,0,0.65);
+      z-index: 60;
+      justify-content: flex-end;
+    }
+    .drawer-panel {
+      width: 390px;
+      max-width: 94vw;
+      height: 100%;
+      background: var(--bg-sidebar);
+      border-left: 3px solid var(--zzz-lime);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+    }
+
+    .drawer-heading {
+      font-family: 'Anton', sans-serif;
+      font-style: italic;
+      font-size: 1.4rem;
+      color: var(--zzz-lime);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mem-card {
+      background: var(--bg-surface);
+      border: 2px solid #090a0d;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.85rem;
+    }
+
+    .mem-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px;
+      margin-top: 6px;
+      background: #12141b;
+      border-left: 3px solid var(--zzz-orange);
+    }
+    .mem-row.score { border-left-color: var(--zzz-purple); }
+
+    .pct-tag {
+      background: var(--zzz-lime);
+      color: #090a0d;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.74rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* MODAL */
+    .modal-wrap {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.82);
+      z-index: 80;
       align-items: center;
       justify-content: center;
     }
-    .modal-box {
-      background: var(--bg-panel);
+    .modal-card {
+      width: 440px;
+      max-width: 92vw;
+      background: var(--bg-sidebar);
       border: 3px solid var(--zzz-lime);
-      box-shadow: 8px 8px 0 #000;
-      padding: 24px;
-      width: 450px;
-      max-width: 92%;
+      box-shadow: 6px 6px 0 #090a0d;
+      padding: 22px;
     }
-    .modal-box input {
+    .modal-card input, .modal-card select {
       width: 100%;
-      padding: 10px;
+      padding: 9px 10px;
       margin: 6px 0 14px;
-      background: #090a0d;
-      border: 1px solid #3c4052;
-      color: #fff;
+      background: var(--bg-canvas);
+      border: 1px solid #393f54;
+      color: var(--text-primary);
+      border-radius: 6px;
       font-family: 'JetBrains Mono', monospace;
     }
 
     @media (max-width: 820px) {
       .sidebar { position: fixed; height: 100%; transform: translateX(-100%); }
       .sidebar.open { transform: translateX(0); }
-      .bubble-wrap { max-width: 94%; }
+      .mobile-menu-btn { display: inline-block; }
+      .msg-bubble { max-width: 88%; }
     }
   </style>
 </head>
 <body>
 
+  <!-- LEFT SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-    <div class="ik-header">
-      <span class="ik-title">INTER-KNOT</span>
-      <span class="ik-ver">FAIRY // NP-OS</span>
+    <div class="brand-strip">
+      <span class="logo-text">INTER-KNOT</span>
+      <span class="char-tag" id="sidebarCharLabel">FAIRY</span>
     </div>
 
-    <button class="btn-action" onclick="resetSession()">+ NEW COMMISSION</button>
+    <button class="nav-btn" onclick="startNewChat()">✎ <span>New chat</span></button>
+    <input class="search-input" id="searchChatsInput" type="text" placeholder="🔍 Search chats" oninput="renderChatHistory()" />
 
-    <div class="sync-pill">
-      <span><span class="dot-live"></span><span id="portalSyncStatus">Portal Auto-Sync: Waiting</span></span>
-      <button onclick="viewSyncedContext()" style="background:none;border:none;color:var(--zzz-lime);cursor:pointer;font-weight:700;">[VIEW]</button>
-    </div>
+    <div class="history-scroll" id="chatHistoryList"></div>
 
-    <div>
-      <div class="panel-label">
-        <span>SCHEDULES & EXAMS</span>
-        <span onclick="clearStore('deadlines')" style="cursor:pointer;color:var(--text-dim)">[CLR]</span>
-      </div>
-      <div class="tracker-card" id="deadlineBox"></div>
-    </div>
-
-    <div>
-      <div class="panel-label">
-        <span>QUIZ & CA MARKS (%)</span>
-        <span onclick="clearStore('grades')" style="cursor:pointer;color:var(--text-dim)">[CLR]</span>
-      </div>
-      <div class="tracker-card" id="gradeBox"></div>
-    </div>
-
-    <div style="margin-top:auto; display:flex; flex-direction:column; gap:8px;">
-      <button class="btn-tool" style="height:42px; color:#fff;" onclick="openSettings()">⚙ API KEYS (GOOGLE + OPENROUTER)</button>
+    <div class="sidebar-footer">
+      <button class="nav-btn" onclick="openDrawer('memory')">◎ <span>Memory (Schedules & Quiz %)</span></button>
+      <button class="nav-btn" onclick="openDrawer('notes')">▤ <span>Notes & Portal Sync</span></button>
+      <button class="nav-btn" onclick="openModal()">⚙ <span>API Keys & Agent</span></button>
     </div>
   </aside>
 
-  <main class="workspace">
-    <header class="topbar">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <button class="btn-tool" style="height:36px; padding:0 10px;" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
-        <span class="top-title">PROXY TERMINAL // NGEE ANN POLYTECHNIC</span>
+  <!-- MAIN WORKSPACE -->
+  <main class="main-area">
+    <header class="top-bar">
+      <div class="top-left">
+        <button class="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <div class="agent-pill" id="topAgentBadge">⚡ FAIRY // STUDY BUDDY</div>
       </div>
-      <span class="router-badge" id="routerBadge">READY // MULTI-KEY FAILOVER</span>
+      <div class="top-actions">
+        <button class="mini-btn" onclick="cycleCharacter()">🎭 SWITCH ZZZ AGENT</button>
+        <button class="mini-btn" id="syncStatusBtn" onclick="openDrawer('notes')">SYNC: 0 PAGES</button>
+      </div>
     </header>
 
-    <div class="chat-stream" id="chatStream">
-      <div class="bubble-wrap bot">
-        <div class="avatar bot">AI</div>
-        <div class="bubble bot">
-          <strong>[FAIRY ONLINE]</strong> Greetings, Master. Click <strong>⚙ API KEYS</strong> in the bottom-left sidebar if you haven't saved your Google AI Studio or OpenRouter keys yet.
+    <div class="stage" id="stageScroll">
+      <!-- HERO LANDING VIEW -->
+      <section class="hero-screen" id="heroScreen">
+        <div class="character-ring" onclick="cycleCharacter()" title="Click to switch ZZZ Agent avatar">
+          <img id="heroAvatarImg" alt="ZZZ Character Avatar" />
         </div>
-      </div>
+
+        <h1 class="hero-title">What do you want to <span>learn</span>?</h1>
+
+        <div class="composer-card">
+          <div class="file-chip" id="heroFileChip"></div>
+          <div class="composer-row">
+            <button class="plus-btn" onclick="triggerFilePicker()" title="Attach file or image">+</button>
+            <textarea class="prompt-field" id="heroInput" rows="1" placeholder="Ask anything, log quiz % or deadlines, or /imagine..." onkeydown="handleKey(event, 'hero')"></textarea>
+            <button class="send-circle" id="heroSendBtn" onclick="sendPrompt('hero')">↑</button>
+          </div>
+        </div>
+
+        <div class="quick-pills">
+          <button class="topic-pill" onclick="quickAsk('Teach me C# OOP classes and inheritance with clear examples')">C# OOP</button>
+          <button class="topic-pill" onclick="quickAsk('Explain SQL joins and normalization with a clean table')">SQL Databases</button>
+          <button class="topic-pill" onclick="quickAsk('Explain eigenvalues and matrix multiplication step by step')">Linear Algebra</button>
+          <button class="topic-pill" onclick="quickAsk('Explain probability distributions and expected value clearly')">Statistics</button>
+          <button class="topic-pill" onclick="quickAsk('Help me organize my upcoming deadlines and quiz percentage marks')">Deadlines & Quiz %</button>
+          <button class="topic-pill" onclick="quickAsk('Create a Python data visualization snippet using matplotlib')">Data Viz</button>
+        </div>
+      </section>
+
+      <!-- ACTIVE CHAT THREAD -->
+      <section class="thread-view" id="threadView"></section>
     </div>
 
-    <div class="dock">
-      <div class="attachment-bar" id="attachBar"></div>
-      <div class="dock-row">
-        <input type="file" id="filePicker" accept="image/*,.pdf,.txt,.csv,.json" style="display:none" onchange="onFileSelected(event)" />
-        <button class="btn-tool" onclick="document.getElementById('filePicker').click()">+ FILE / IMG</button>
-        <textarea id="promptBox" placeholder="Ask Fairy about your modules, grades, deadlines, or type /imagine [prompt]..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); transmit();}"></textarea>
-        <button class="btn-action" id="sendBtn" style="height:52px; padding:0 22px;" onclick="transmit()">EXECUTE</button>
+    <!-- BOTTOM DOCK (Visible once a chat is active) -->
+    <div class="bottom-dock" id="bottomDock">
+      <div class="composer-card">
+        <div class="file-chip" id="dockFileChip"></div>
+        <div class="composer-row">
+          <button class="plus-btn" onclick="triggerFilePicker()" title="Attach file or image">+</button>
+          <textarea class="prompt-field" id="dockInput" rows="1" placeholder="Ask anything" onkeydown="handleKey(event, 'dock')"></textarea>
+          <button class="send-circle" id="dockSendBtn" onclick="sendPrompt('dock')">↑</button>
+        </div>
       </div>
     </div>
   </main>
 
-  <div class="modal-bg" id="settingsModal">
-    <div class="modal-box">
-      <h2 style="font-family:'Anton'; font-style:italic; color:var(--zzz-lime); margin-bottom:10px; letter-spacing:1px;">PROXY API CREDENTIALS</h2>
-      <p style="font-size:0.8rem; color:var(--text-dim); margin-bottom:12px;">Stored locally in your browser only. Never uploaded to GitHub.</p>
-      <label style="font-size:0.8rem;">Google AI Studio Key (Primary + Vision/PDFs):</label>
-      <input type="password" id="inGemini" placeholder="AIzaSy..." />
-      <label style="font-size:0.8rem;">OpenRouter Key (Unlimited Free Failover):</label>
-      <input type="password" id="inOpenRouter" placeholder="sk-or-v1-..." />
-      <div style="display:flex; justify-content:flex-end; gap:10px;">
-        <button class="btn-tool" style="height:38px;" onclick="closeSettings()">CLOSE</button>
-        <button class="btn-action" style="height:38px;" onclick="saveSettings()">SAVE KEYS</button>
+  <input type="file" id="hiddenFileInput" accept="image/*,.pdf,.txt,.csv,.json" style="display:none" onchange="onFilePicked(event)" />
+
+  <!-- MEMORY & NOTES DRAWER -->
+  <div class="drawer-backdrop" id="drawerBackdrop" onclick="if(event.target===this) closeDrawer()">
+    <div class="drawer-panel">
+      <div class="drawer-heading">
+        <span id="drawerTitle">MEMORY</span>
+        <button class="mini-btn" onclick="closeDrawer()">✕</button>
+      </div>
+
+      <div id="memoryTabContent">
+        <div class="mem-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong>📅 SCHEDULES, ASSIGNMENTS & EXAMS</strong>
+            <button class="mini-btn" onclick="clearTracker('deadlines')">CLR</button>
+          </div>
+          <div id="drawerDeadlines"></div>
+        </div>
+
+        <div class="mem-card" style="margin-top:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong>📊 QUIZ & CA PERCENTAGE MARKS</strong>
+            <button class="mini-btn" onclick="clearTracker('grades')">CLR</button>
+          </div>
+          <div id="drawerGrades"></div>
+        </div>
+      </div>
+
+      <div id="notesTabContent" style="display:none;">
+        <div class="mem-card">
+          <strong>🔗 POLITEMALL / BRIGHTSPACE AUTO-SYNC</strong>
+          <p id="syncedPagesSummary" style="color:var(--text-secondary);margin-top:6px;font-size:0.82rem;">No pages synced yet.</p>
+        </div>
+        <div class="mem-card" style="margin-top:12px;">
+          <strong>📝 QUICK STUDY NOTES</strong>
+          <textarea id="quickNotesArea" rows="10" style="width:100%;margin-top:8px;background:#0e1016;color:#fff;border:1px solid #353b4f;border-radius:6px;padding:8px;font-family:inherit;" oninput="localStorage.setItem('ik_study_notes', this.value)" placeholder="Jot down revision notes, formulas, or exam reminders..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- API & AGENT SETTINGS MODAL -->
+  <div class="modal-wrap" id="settingsModal">
+    <div class="modal-card">
+      <h2 style="font-family:'Anton';font-style:italic;color:var(--zzz-lime);margin-bottom:10px;">INTER-KNOT CONFIG</h2>
+      <label style="font-size:0.8rem;">ZZZ Character Persona:</label>
+      <select id="agentSelect">
+        <option value="fairy">Fairy (Witty Tactical AI)</option>
+        <option value="nicole">Nicole Demara (Cunning Hares Lead)</option>
+        <option value="anby">Anby Demara (Calm Burger-Loving Strategist)</option>
+        <option value="miyabi">Hoshimi Miyabi (Focused Void Hunter)</option>
+      </select>
+
+      <label style="font-size:0.8rem;">Google AI Studio API Key:</label>
+      <input type="password" id="geminiKeyInput" placeholder="AIzaSy..." />
+
+      <label style="font-size:0.8rem;">OpenRouter API Key (Free Failover):</label>
+      <input type="password" id="openrouterKeyInput" placeholder="sk-or-v1-..." />
+
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:6px;">
+        <button class="mini-btn" style="padding:8px 14px;" onclick="closeModal()">CANCEL</button>
+        <button class="mini-btn" style="padding:8px 14px;background:var(--zzz-lime);color:#090a0d;" onclick="saveConfig()">SAVE</button>
       </div>
     </div>
   </div>
 
   <script>
-    let history = [];
-    let pendingFile = null;
-    let isBusy = false;
+    // Stylized ZZZ-inspired SVG avatars (reliable, zero broken hotlinks)
+    const ZZZ_AGENTS = {
+      fairy: {
+        name: 'FAIRY',
+        badge: '⚡ FAIRY // STUDY BUDDY',
+        accent: '#9D4EDD',
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="#1a1628"/><circle cx="60" cy="62" r="36" fill="#2c2445" stroke="#D8FA00" stroke-width="4"/><polygon points="26,34 42,18 46,38" fill="#FF5500"/><polygon points="94,34 78,18 74,38" fill="#FF5500"/><ellipse cx="47" cy="60" rx="6" ry="8" fill="#00F0FF"/><ellipse cx="73" cy="60" rx="6" ry="8" fill="#D8FA00"/><path d="M48,76 Q60,85 72,76" fill="none" stroke="#F5F6FA" stroke-width="3.5" stroke-linecap="round"/></svg>`
+      },
+      nicole: {
+        name: 'NICOLE',
+        badge: '💼 NICOLE // CUNNING HARES',
+        accent: '#FF69B4',
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="#281624"/><circle cx="60" cy="64" r="34" fill="#ffe2d6"/><path d="M22,56 Q26,18 60,18 Q94,18 98,56 L90,82 L30,82 Z" fill="#ff7eb6"/><circle cx="46" cy="62" r="5.5" fill="#d9387a"/><circle cx="74" cy="62" r="5.5" fill="#d9387a"/><path d="M51,77 Q60,83 69,77" fill="none" stroke="#8a1c4a" stroke-width="3" stroke-linecap="round"/><rect x="36" y="20" width="48" height="10" rx="4" fill="#090a0d"/></svg>`
+      },
+      anby: {
+        name: 'ANBY',
+        badge: '🎧 ANBY // TACTICAL UNIT',
+        accent: '#D8FA00',
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="#151a18"/><circle cx="60" cy="64" r="34" fill="#ffe7dc"/><path d="M24,62 Q26,20 60,20 Q94,20 96,62 L84,50 L60,56 L36,50 Z" fill="#e6ecf2"/><rect x="20" y="44" width="12" height="24" rx="5" fill="#090a0d" stroke="#D8FA00" stroke-width="2"/><rect x="88" y="44" width="12" height="24" rx="5" fill="#090a0d" stroke="#D8FA00" stroke-width="2"/><circle cx="47" cy="64" r="5" fill="#2b3a42"/><circle cx="73" cy="64" r="5" fill="#2b3a42"/><line x1="54" y1="78" x2="66" y2="78" stroke="#333" stroke-width="3" stroke-linecap="round"/></svg>`
+      },
+      miyabi: {
+        name: 'MIYABI',
+        badge: '⚔ MIYABI // VOID HUNTER',
+        accent: '#00F0FF',
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="#101724"/><polygon points="34,34 26,8 48,26" fill="#181c26" stroke="#00F0FF" stroke-width="2"/><polygon points="86,34 94,8 72,26" fill="#181c26" stroke="#00F0FF" stroke-width="2"/><circle cx="60" cy="64" r="34" fill="#ffe4d8"/><path d="M25,64 Q28,22 60,22 Q92,22 95,64 L82,48 L60,54 L38,48 Z" fill="#191d29"/><circle cx="47" cy="63" r="5.5" fill="#c92a42"/><circle cx="73" cy="63" r="5.5" fill="#c92a42"/><path d="M54,78 Q60,81 66,78" fill="none" stroke="#222" stroke-width="2.5" stroke-linecap="round"/></svg>`
+      }
+    };
+
+    function getAvatarDataUri(agentKey) {
+      const agent = ZZZ_AGENTS[agentKey] || ZZZ_AGENTS.fairy;
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(agent.svg);
+    }
+
+    let currentAgent = localStorage.getItem('ik_agent') || 'fairy';
+    let chats = JSON.parse(localStorage.getItem('ik_chats') || '[]');
+    let activeChatId = null;
+    let attachedFile = null;
+    let isSending = false;
+
     let deadlines = JSON.parse(localStorage.getItem('ik_deadlines') || '[]');
     let grades = JSON.parse(localStorage.getItem('ik_grades') || '[]');
-    let portalMemory = JSON.parse(localStorage.getItem('ik_portal_pages') || '{}');
+    let portalPages = JSON.parse(localStorage.getItem('ik_portal_pages') || '{}');
 
-    function updatePortalBadge() {
-      const count = Object.keys(portalMemory).length;
-      document.getElementById('portalSyncStatus').textContent = count
-        ? `Portal Synced: ${count} page(s) in memory`
-        : 'Portal Auto-Sync: Waiting for PoliteMall';
+    function applyAgentTheme() {
+      const ag = ZZZ_AGENTS[currentAgent] || ZZZ_AGENTS.fairy;
+      document.getElementById('sidebarCharLabel').textContent = ag.name;
+      document.getElementById('topAgentBadge').textContent = ag.badge;
+      document.getElementById('heroAvatarImg').src = getAvatarDataUri(currentAgent);
+      document.querySelectorAll('.bot-avatar-img').forEach(img => { img.src = getAvatarDataUri(currentAgent); });
+    }
+
+    function cycleCharacter() {
+      const keys = Object.keys(ZZZ_AGENTS);
+      const next = keys[(keys.indexOf(currentAgent) + 1) % keys.length];
+      currentAgent = next;
+      localStorage.setItem('ik_agent', currentAgent);
+      applyAgentTheme();
+    }
+
+    function updateSyncPill() {
+      const count = Object.keys(portalPages).length;
+      document.getElementById('syncStatusBtn').textContent = `SYNC: ${count} PAGE${count === 1 ? '' : 'S'}`;
+      document.getElementById('syncedPagesSummary').textContent = count
+        ? Object.values(portalPages).map(p => `• ${p.title} (${p.timestamp})`).join('\n')
+        : 'No PoliteMall / Brightspace pages synced yet.';
     }
 
     window.addEventListener('message', (e) => {
       if (e.data && e.data.type === 'IK_AUTO_SYNC_PAGE') {
         const { url, title, text, timestamp } = e.data.payload;
-        portalMemory[url] = { title, text: text.slice(0, 15000), timestamp };
-        localStorage.setItem('ik_portal_pages', JSON.stringify(portalMemory));
-        updatePortalBadge();
+        portalPages[url] = { title, text: text.slice(0, 15000), timestamp };
+        localStorage.setItem('ik_portal_pages', JSON.stringify(portalPages));
+        updateSyncPill();
       }
     });
 
-    function viewSyncedContext() {
-      const pages = Object.values(portalMemory);
-      if (!pages.length) return alert('No PoliteMall pages synced yet. Open PoliteMall in Chrome with the extension installed.');
-      alert('Synced School Pages:\n\n' + pages.map(p => `• ${p.title} (${p.timestamp})`).join('\n'));
+    function saveChats() {
+      localStorage.setItem('ik_chats', JSON.stringify(chats));
+      renderChatHistory();
     }
 
-    function renderTrackers() {
-      document.getElementById('deadlineBox').innerHTML = deadlines.length
-        ? deadlines.map(d => `<div class="t-row"><span>${d.title}</span><b>${d.date}</b></div>`).join('')
-        : '<span style="color:#666">No upcoming exams or tasks logged.</span>';
+    function renderChatHistory() {
+      const q = (document.getElementById('searchChatsInput').value || '').toLowerCase().trim();
+      const container = document.getElementById('chatHistoryList');
+      const filtered = chats.filter(c => !q || c.title.toLowerCase().includes(q));
 
-      document.getElementById('gradeBox').innerHTML = grades.length
-        ? grades.map(g => `<div class="t-row grade"><span>${g.title}</span><span class="badge-score">${g.score}</span></div>`).join('')
-        : '<span style="color:#666">No quiz/CA marks recorded yet.</span>';
+      if (!filtered.length) {
+        container.innerHTML = `<div style="color:var(--text-muted);font-size:0.8rem;padding:10px;">No study chats yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = `<div class="history-group-title">Recent Sessions</div>` + filtered.map(c => `
+        <button class="history-item ${c.id === activeChatId ? 'active' : ''}" onclick="openChat('${c.id}')">${escapeHtml(c.title)}</button>
+      `).join('');
     }
 
-    function clearStore(kind) {
-      if (kind === 'deadlines') { deadlines = []; localStorage.setItem('ik_deadlines', '[]'); }
-      if (kind === 'grades') { grades = []; localStorage.setItem('ik_grades', '[]'); }
-      renderTrackers();
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
     }
 
-    function onFileSelected(e) {
+    function startNewChat() {
+      activeChatId = null;
+      document.getElementById('heroScreen').style.display = 'flex';
+      document.getElementById('threadView').style.display = 'none';
+      document.getElementById('threadView').innerHTML = '';
+      document.getElementById('bottomDock').style.display = 'none';
+      renderChatHistory();
+    }
+
+    function openChat(id) {
+      const chat = chats.find(c => c.id === id);
+      if (!chat) return;
+      activeChatId = id;
+      document.getElementById('heroScreen').style.display = 'none';
+      document.getElementById('threadView').style.display = 'flex';
+      document.getElementById('bottomDock').style.display = 'block';
+
+      const tv = document.getElementById('threadView');
+      tv.innerHTML = '';
+      chat.messages.forEach(m => appendMessageDom(m.role, m.html, m.img));
+      renderChatHistory();
+    }
+
+    function quickAsk(promptText) {
+      document.getElementById('heroInput').value = promptText;
+      sendPrompt('hero');
+    }
+
+    function handleKey(e, source) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendPrompt(source);
+      }
+    }
+
+    function triggerFilePicker() {
+      document.getElementById('hiddenFileInput').click();
+    }
+
+    function onFilePicked(e) {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = () => {
-        pendingFile = {
+        attachedFile = {
           base64: reader.result.split(',')[1],
           mimeType: file.type || 'text/plain',
           name: file.name,
           dataUrl: reader.result
         };
-        const bar = document.getElementById('attachBar');
-        bar.style.display = 'block';
-        bar.textContent = `📎 BUFFERED: ${file.name}`;
+        const label = `📎 ${file.name}`;
+        ['heroFileChip', 'dockFileChip'].forEach(id => {
+          const el = document.getElementById(id);
+          el.style.display = 'inline-block';
+          el.textContent = label;
+        });
       };
       reader.readAsDataURL(file);
     }
 
-    function addBubble(role, html, imgSrc = null, id = null) {
-      const stream = document.getElementById('chatStream');
-      const wrap = document.createElement('div');
-      wrap.className = `bubble-wrap ${role}`;
-      if (id) wrap.id = id;
-      wrap.innerHTML = `
-        <div class="avatar ${role}">${role === 'user' ? 'PX' : 'AI'}</div>
-        <div class="bubble ${role}">${html}${imgSrc ? `<img src="${imgSrc}" />` : ''}</div>
+    function clearFileChips() {
+      attachedFile = null;
+      document.getElementById('hiddenFileInput').value = '';
+      ['heroFileChip', 'dockFileChip'].forEach(id => {
+        const el = document.getElementById(id);
+        el.style.display = 'none';
+        el.textContent = '';
+      });
+    }
+
+    function appendMessageDom(role, html, imgSrc = null, domId = null) {
+      const tv = document.getElementById('threadView');
+      const row = document.createElement('div');
+      row.className = `msg-row ${role}`;
+      if (domId) row.id = domId;
+
+      const avatarHtml = role === 'bot'
+        ? `<div class="msg-avatar"><img class="bot-avatar-img" src="${getAvatarDataUri(currentAgent)}" alt="Agent" /></div>`
+        : '';
+
+      row.innerHTML = `
+        ${avatarHtml}
+        <div class="msg-bubble">${html}${imgSrc ? `<img src="${imgSrc}" />` : ''}</div>
       `;
-      stream.appendChild(wrap);
-      stream.scrollTop = stream.scrollHeight;
-      return wrap;
+      tv.appendChild(row);
+      document.getElementById('stageScroll').scrollTop = document.getElementById('stageScroll').scrollHeight;
+      return row;
     }
 
     function buildSystemPrompt() {
-      const syncedDump = Object.values(portalMemory)
-        .map(p => `--- SYNCED SCHOOL PAGE: ${p.title} (${p.timestamp}) ---\n${p.text}`)
+      const agent = ZZZ_AGENTS[currentAgent] || ZZZ_AGENTS.fairy;
+      const syncedContext = Object.values(portalPages)
+        .map(p => `[${p.title} | ${p.timestamp}]\n${p.text}`)
         .join('\n\n');
 
-      return `You are Fairy, the sharp, witty tactical AI assistant from Zenless Zone Zero assisting Master (a student at Ngee Ann Polytechnic).
-Use the live synced school portal context below whenever Master asks about schedules, modules, announcements, or quiz/test marks:
+      return `You are ${agent.name} (${agent.badge}) from Zenless Zone Zero acting as a smart study companion for a Ngee Ann Polytechnic student.
+Format answers cleanly using headings, bullet points, or Markdown tables when helpful.
 
-${syncedDump || '[No school portal pages synced yet]'}
+Synced PoliteMall / Brightspace Context:
+${syncedContext || '[None synced yet]'}
 
-TRACKER SYNC PROTOCOL:
-Whenever new deadlines, exam dates, or quiz/CA percentage marks are discovered or mentioned, append this exact JSON block at the very end of your response:
+Whenever the user logs or mentions assignment deadlines, exam dates, or quiz/CA percentage marks, append this JSON tag at the very end:
 <IK_DATA>
-{"deadlines":[{"title":"Module - Task","date":"Dec 4"}],"grades":[{"title":"Module Quiz 1","score":"88%"}]}
+{"deadlines":[{"title":"Module - Task","date":"Nov 28"}],"grades":[{"title":"Module Quiz 1","score":"86%"}]}
 </IK_DATA>`;
     }
 
-    async function queryGemini(prompt, model, key) {
+    async function callGemini(prompt, model, key, fileObj) {
       const parts = [{ text: prompt }];
-      if (pendingFile) {
-        parts.push({ inline_data: { mime_type: pendingFile.mimeType, data: pendingFile.base64 } });
+      if (fileObj) {
+        parts.push({ inline_data: { mime_type: fileObj.mimeType, data: fileObj.base64 } });
       }
+      const chatObj = chats.find(c => c.id === activeChatId);
+      const prior = (chatObj?.messages || []).slice(-8).map(m => ({
+        role: m.role === 'bot' ? 'model' : 'user',
+        parts: [{ text: m.plain || '' }]
+      }));
+
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: buildSystemPrompt() }] },
-          contents: [...history, { role: 'user', parts }]
+          contents: [...prior, { role: 'user', parts }]
         })
       });
       const json = await res.json();
-      if (!res.ok) {
-        throw new Error(json?.error?.message || `Gemini HTTP ${res.status}`);
-      }
-      const outText = json?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (!outText) throw new Error('Empty response from Gemini');
-      return outText;
+      if (!res.ok) throw new Error(json?.error?.message || `Gemini HTTP ${res.status}`);
+      const out = json?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!out) throw new Error('Empty Gemini response');
+      return out;
     }
 
-    async function queryOpenRouter(prompt, key) {
+    async function callOpenRouter(prompt, key) {
+      const chatObj = chats.find(c => c.id === activeChatId);
+      const prior = (chatObj?.messages || []).slice(-8).map(m => ({
+        role: m.role === 'bot' ? 'assistant' : 'user',
+        content: m.plain || ''
+      }));
+
       const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
@@ -558,127 +967,184 @@ Whenever new deadlines, exam dates, or quiz/CA percentage marks are discovered o
           model: 'openrouter/free',
           messages: [
             { role: 'system', content: buildSystemPrompt() },
-            ...history.map(m => ({
-              role: m.role === 'model' ? 'assistant' : 'user',
-              content: m.parts?.[0]?.text || ''
-            })),
+            ...prior,
             { role: 'user', content: prompt }
           ]
         })
       });
       const json = await res.json();
-      if (!res.ok) {
-        throw new Error(json?.error?.message || `OpenRouter HTTP ${res.status}`);
-      }
-      const outText = json?.choices?.[0]?.message?.content;
-      if (!outText) throw new Error('Empty response from OpenRouter');
-      return outText;
+      if (!res.ok) throw new Error(json?.error?.message || `OpenRouter HTTP ${res.status}`);
+      const out = json?.choices?.[0]?.message?.content;
+      if (!out) throw new Error('Empty OpenRouter response');
+      return out;
     }
 
-    async function transmit() {
-      if (isBusy) return;
-      const box = document.getElementById('promptBox');
-      const text = box.value.trim();
-      if (!text && !pendingFile) return;
+    async function sendPrompt(source) {
+      if (isSending) return;
+      const inputEl = document.getElementById(source === 'hero' ? 'heroInput' : 'dockInput');
+      const rawText = inputEl.value.trim();
+      if (!rawText && !attachedFile) return;
 
       const gKey = (localStorage.getItem('ik_gemini_key') || '').trim();
       const oKey = (localStorage.getItem('ik_openrouter_key') || '').trim();
       if (!gKey && !oKey) {
-        openSettings();
+        openModal();
         return;
       }
 
-      isBusy = true;
-      const sendBtn = document.getElementById('sendBtn');
-      sendBtn.disabled = true;
+      // Switch to active thread view
+      if (!activeChatId) {
+        activeChatId = 'chat_' + Date.now();
+        chats.unshift({
+          id: activeChatId,
+          title: (rawText || attachedFile?.name || 'Study Session').slice(0, 42),
+          messages: []
+        });
+        document.getElementById('heroScreen').style.display = 'none';
+        document.getElementById('threadView').style.display = 'flex';
+        document.getElementById('bottomDock').style.display = 'block';
+      }
 
-      const currentFile = pendingFile;
-      pendingFile = null;
-      document.getElementById('attachBar').style.display = 'none';
-      document.getElementById('filePicker').value = '';
+      const fileSnap = attachedFile;
+      clearFileChips();
+      inputEl.value = '';
 
-      addBubble('user', text || `[Uploaded ${currentFile.name}]`, currentFile?.mimeType.startsWith('image/') ? currentFile.dataUrl : null);
-      box.value = '';
+      const userHtml = escapeHtml(rawText || `[Attached: ${fileSnap.name}]`);
+      const userImg = fileSnap?.mimeType?.startsWith('image/') ? fileSnap.dataUrl : null;
 
-      if (text.toLowerCase().startsWith('/imagine ')) {
-        const q = encodeURIComponent(text.slice(9));
-        addBubble('bot', `Rendered visual output for: <strong>${text.slice(9)}</strong>`, `https://image.pollinations.ai/prompt/${q}?width=768&height=512&nologo=true`);
-        isBusy = false;
-        sendBtn.disabled = false;
+      appendMessageDom('user', userHtml, userImg);
+      const chatObj = chats.find(c => c.id === activeChatId);
+      chatObj.messages.push({ role: 'user', html: userHtml, img: userImg, plain: rawText || fileSnap.name });
+      saveChats();
+
+      if (rawText.toLowerCase().startsWith('/imagine ')) {
+        const q = encodeURIComponent(rawText.slice(9).trim());
+        const imgUrl = `https://image.pollinations.ai/prompt/${q}?width=768&height=512&nologo=true`;
+        const botHtml = `Generated: <strong>${escapeHtml(rawText.slice(9).trim())}</strong>`;
+        appendMessageDom('bot', botHtml, imgUrl);
+        chatObj.messages.push({ role: 'bot', html: botHtml, img: imgUrl, plain: rawText });
+        saveChats();
         return;
       }
 
-      const loadingId = 'loading-' + Date.now();
-      addBubble('bot', '<em>[FAIRY COMPUTING RESPONSE...]</em>', null, loadingId);
+      isSending = true;
+      document.getElementById('heroSendBtn').disabled = true;
+      document.getElementById('dockSendBtn').disabled = true;
 
-      const badge = document.getElementById('routerBadge');
-      const errors = [];
+      const loadId = 'thinking_' + Date.now();
+      appendMessageDom('bot', '<em>Thinking...</em>', null, loadId);
+
       let reply = null;
+      const errs = [];
 
       if (gKey) {
-        for (const m of ['gemini-4-hydrogen', 'gemini-3.8-flash', 'gemini-3.5-flash-lite']) {
+        for (const modelName of ['gemini-4-hydrogen', 'gemini-3.8-flash', 'gemini-3.5-flash-lite']) {
           try {
-            badge.textContent = `ROUTING // ${m.toUpperCase()}`;
-            reply = await queryGemini(text || 'Analyze the attached file.', m, gKey);
+            reply = await callGemini(rawText || 'Analyze this attachment.', modelName, gKey, fileSnap);
             break;
           } catch (err) {
-            errors.push(`${m}: ${err.message}`);
+            errs.push(`${modelName}: ${err.message}`);
           }
         }
       }
 
       if (!reply && oKey) {
         try {
-          badge.textContent = 'FAILOVER // OPENROUTER FREE';
-          reply = await queryOpenRouter(text || 'Analyze the attached file.', oKey);
+          reply = await callOpenRouter(rawText || 'Analyze this attachment.', oKey);
         } catch (err) {
-          errors.push(`openrouter/free: ${err.message}`);
+          errs.push(`openrouter/free: ${err.message}`);
         }
       }
 
-      document.getElementById(loadingId)?.remove();
-      badge.textContent = 'READY // MULTI-KEY FAILOVER';
-      isBusy = false;
-      sendBtn.disabled = false;
+      document.getElementById(loadId)?.remove();
+      isSending = false;
+      document.getElementById('heroSendBtn').disabled = false;
+      document.getElementById('dockSendBtn').disabled = false;
 
       if (!reply) {
-        addBubble('bot', `⚠️ **Request Failed:**<br><pre>${errors.join('\n')}</pre>Click <strong>⚙ API KEYS</strong> to verify your keys.`);
+        const errHtml = `<strong>Connection error:</strong><pre>${escapeHtml(errs.join('\n'))}</pre>`;
+        appendMessageDom('bot', errHtml);
         return;
       }
 
-      const tagMatch = reply.match(/<IK_DATA>([\s\S]*?)<\/IK_DATA>/);
-      if (tagMatch) {
+      const dataMatch = reply.match(/<IK_DATA>([\s\S]*?)<\/IK_DATA>/);
+      if (dataMatch) {
         try {
-          const parsed = JSON.parse(tagMatch[1]);
-          if (parsed.deadlines) { deadlines.push(...parsed.deadlines); localStorage.setItem('ik_deadlines', JSON.stringify(deadlines)); }
-          if (parsed.grades) { grades.push(...parsed.grades); localStorage.setItem('ik_grades', JSON.stringify(grades)); }
-          renderTrackers();
-        } catch (err) {}
+          const parsed = JSON.parse(dataMatch[1]);
+          if (Array.isArray(parsed.deadlines)) {
+            deadlines.push(...parsed.deadlines);
+            localStorage.setItem('ik_deadlines', JSON.stringify(deadlines));
+          }
+          if (Array.isArray(parsed.grades)) {
+            grades.push(...parsed.grades);
+            localStorage.setItem('ik_grades', JSON.stringify(grades));
+          }
+          renderMemoryDrawer();
+        } catch (e) {}
         reply = reply.replace(/<IK_DATA>[\s\S]*?<\/IK_DATA>/, '').trim();
       }
 
-      history.push({ role: 'user', parts: [{ text: text || `[File: ${currentFile?.name}]` }] }, { role: 'model', parts: [{ text: reply }] });
-      addBubble('bot', marked.parse(reply));
+      const renderedBotHtml = marked.parse(reply);
+      appendMessageDom('bot', renderedBotHtml);
+      chatObj.messages.push({ role: 'bot', html: renderedBotHtml, img: null, plain: reply });
+      saveChats();
     }
 
-    function openSettings() {
-      document.getElementById('inGemini').value = localStorage.getItem('ik_gemini_key') || '';
-      document.getElementById('inOpenRouter').value = localStorage.getItem('ik_openrouter_key') || '';
+    function renderMemoryDrawer() {
+      document.getElementById('drawerDeadlines').innerHTML = deadlines.length
+        ? deadlines.map(d => `<div class="mem-row"><span>${escapeHtml(d.title)}</span><b>${escapeHtml(d.date)}</b></div>`).join('')
+        : `<div style="color:var(--text-muted);margin-top:6px;">No deadlines or exams saved yet.</div>`;
+
+      document.getElementById('drawerGrades').innerHTML = grades.length
+        ? grades.map(g => `<div class="mem-row score"><span>${escapeHtml(g.title)}</span><span class="pct-tag">${escapeHtml(g.score)}</span></div>`).join('')
+        : `<div style="color:var(--text-muted);margin-top:6px;">No quiz or CA percentages saved yet.</div>`;
+    }
+
+    function clearTracker(kind) {
+      if (kind === 'deadlines') { deadlines = []; localStorage.setItem('ik_deadlines', '[]'); }
+      if (kind === 'grades') { grades = []; localStorage.setItem('ik_grades', '[]'); }
+      renderMemoryDrawer();
+    }
+
+    function openDrawer(tab) {
+      document.getElementById('drawerBackdrop').style.display = 'flex';
+      document.getElementById('drawerTitle').textContent = tab === 'memory' ? 'MEMORY' : 'NOTES & PORTAL';
+      document.getElementById('memoryTabContent').style.display = tab === 'memory' ? 'block' : 'none';
+      document.getElementById('notesTabContent').style.display = tab === 'notes' ? 'block' : 'none';
+      document.getElementById('quickNotesArea').value = localStorage.getItem('ik_study_notes') || '';
+      renderMemoryDrawer();
+      updateSyncPill();
+    }
+
+    function closeDrawer() {
+      document.getElementById('drawerBackdrop').style.display = 'none';
+    }
+
+    function openModal() {
+      document.getElementById('agentSelect').value = currentAgent;
+      document.getElementById('geminiKeyInput').value = localStorage.getItem('ik_gemini_key') || '';
+      document.getElementById('openrouterKeyInput').value = localStorage.getItem('ik_openrouter_key') || '';
       document.getElementById('settingsModal').style.display = 'flex';
     }
-    function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
-    function saveSettings() {
-      localStorage.setItem('ik_gemini_key', document.getElementById('inGemini').value.trim());
-      localStorage.setItem('ik_openrouter_key', document.getElementById('inOpenRouter').value.trim());
-      closeSettings();
-    }
-    function resetSession() {
-      history = [];
-      document.getElementById('chatStream').innerHTML = '<div class="bubble-wrap bot"><div class="avatar bot">AI</div><div class="bubble bot">Session buffer cleared. Synced school portal memory remains active.</div></div>';
+
+    function closeModal() {
+      document.getElementById('settingsModal').style.display = 'none';
     }
 
-    renderTrackers();
-    updatePortalBadge();
+    function saveConfig() {
+      currentAgent = document.getElementById('agentSelect').value;
+      localStorage.setItem('ik_agent', currentAgent);
+      localStorage.setItem('ik_gemini_key', document.getElementById('geminiKeyInput').value.trim());
+      localStorage.setItem('ik_openrouter_key', document.getElementById('openrouterKeyInput').value.trim());
+      applyAgentTheme();
+      closeModal();
+    }
+
+    // Init
+    applyAgentTheme();
+    renderChatHistory();
+    renderMemoryDrawer();
+    updateSyncPill();
   </script>
 </body>
 </html>
