@@ -38,7 +38,6 @@
       background-size: 20px 20px, 100% 100%;
     }
 
-    /* CRT Scanline & Vignette */
     body::after {
       content: "";
       position: fixed;
@@ -48,7 +47,6 @@
       z-index: 9999;
     }
 
-    /* SIDEBAR */
     .sidebar {
       width: 340px;
       background: var(--bg-panel);
@@ -107,6 +105,7 @@
       transition: all 0.12s ease;
     }
     .btn-action:hover { background: var(--zzz-lime); transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #000; }
+    .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .panel-label {
       font-family: 'Chakra Petch', sans-serif;
@@ -173,7 +172,6 @@
       display: inline-block; margin-right: 6px;
     }
 
-    /* MAIN WORKSPACE */
     .workspace {
       flex: 1;
       display: flex;
@@ -269,7 +267,6 @@
     .bubble th { background: #121318; color: var(--zzz-lime); }
     .bubble img { max-width: 320px; border: 2px solid #000; border-radius: 6px; margin-top: 8px; display: block; }
 
-    /* INPUT DOCK */
     .dock {
       background: var(--bg-panel);
       border-top: 3px solid #000;
@@ -322,7 +319,6 @@
     }
     .btn-tool:hover { background: #2f3342; }
 
-    /* MODAL */
     .modal-bg {
       display: none;
       position: fixed;
@@ -406,7 +402,7 @@
       <div class="bubble-wrap bot">
         <div class="avatar bot">AI</div>
         <div class="bubble bot">
-          <strong>[FAIRY ONLINE]</strong> Greetings, Master. Once you plug in your Google AI Studio and OpenRouter keys in Settings, I will maintain unlimited prompt uptime. Whenever you browse <strong>PoliteMall</strong> in another tab, the Chrome Extension will automatically beam your module schedules, announcements, and quiz grades into my memory buffer.
+          <strong>[FAIRY ONLINE]</strong> Greetings, Master. Click <strong>⚙ API KEYS</strong> in the bottom-left sidebar if you haven't saved your Google AI Studio or OpenRouter keys yet.
         </div>
       </div>
     </div>
@@ -417,7 +413,7 @@
         <input type="file" id="filePicker" accept="image/*,.pdf,.txt,.csv,.json" style="display:none" onchange="onFileSelected(event)" />
         <button class="btn-tool" onclick="document.getElementById('filePicker').click()">+ FILE / IMG</button>
         <textarea id="promptBox" placeholder="Ask Fairy about your modules, grades, deadlines, or type /imagine [prompt]..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); transmit();}"></textarea>
-        <button class="btn-action" style="height:52px; padding:0 22px;" onclick="transmit()">EXECUTE</button>
+        <button class="btn-action" id="sendBtn" style="height:52px; padding:0 22px;" onclick="transmit()">EXECUTE</button>
       </div>
     </div>
   </main>
@@ -440,6 +436,7 @@
   <script>
     let history = [];
     let pendingFile = null;
+    let isBusy = false;
     let deadlines = JSON.parse(localStorage.getItem('ik_deadlines') || '[]');
     let grades = JSON.parse(localStorage.getItem('ik_grades') || '[]');
     let portalMemory = JSON.parse(localStorage.getItem('ik_portal_pages') || '{}');
@@ -451,7 +448,6 @@
         : 'Portal Auto-Sync: Waiting for PoliteMall';
     }
 
-    // Receive automatic background pushes from the Chrome Extension
     window.addEventListener('message', (e) => {
       if (e.data && e.data.type === 'IK_AUTO_SYNC_PAGE') {
         const { url, title, text, timestamp } = e.data.payload;
@@ -501,16 +497,18 @@
       reader.readAsDataURL(file);
     }
 
-    function addBubble(role, html, imgSrc = null) {
+    function addBubble(role, html, imgSrc = null, id = null) {
       const stream = document.getElementById('chatStream');
       const wrap = document.createElement('div');
       wrap.className = `bubble-wrap ${role}`;
+      if (id) wrap.id = id;
       wrap.innerHTML = `
         <div class="avatar ${role}">${role === 'user' ? 'PX' : 'AI'}</div>
         <div class="bubble ${role}">${html}${imgSrc ? `<img src="${imgSrc}" />` : ''}</div>
       `;
       stream.appendChild(wrap);
       stream.scrollTop = stream.scrollHeight;
+      return wrap;
     }
 
     function buildSystemPrompt() {
@@ -519,7 +517,7 @@
         .join('\n\n');
 
       return `You are Fairy, the sharp, witty tactical AI assistant from Zenless Zone Zero assisting Master (a student at Ngee Ann Polytechnic).
-Use the live synced school portal context below whenever Master asks about schedules, modules, announcements, or quiz/test marks—never guess if the data is present below:
+Use the live synced school portal context below whenever Master asks about schedules, modules, announcements, or quiz/test marks:
 
 ${syncedDump || '[No school portal pages synced yet]'}
 
@@ -543,9 +541,13 @@ Whenever new deadlines, exam dates, or quiz/CA percentage marks are discovered o
           contents: [...history, { role: 'user', parts }]
         })
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
-      return json.candidates[0].content.parts[0].text;
+      if (!res.ok) {
+        throw new Error(json?.error?.message || `Gemini HTTP ${res.status}`);
+      }
+      const outText = json?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!outText) throw new Error('Empty response from Gemini');
+      return outText;
     }
 
     async function queryOpenRouter(prompt, key) {
@@ -556,57 +558,93 @@ Whenever new deadlines, exam dates, or quiz/CA percentage marks are discovered o
           model: 'openrouter/free',
           messages: [
             { role: 'system', content: buildSystemPrompt() },
+            ...history.map(m => ({
+              role: m.role === 'model' ? 'assistant' : 'user',
+              content: m.parts?.[0]?.text || ''
+            })),
             { role: 'user', content: prompt }
           ]
         })
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
-      return json.choices[0].message.content;
+      if (!res.ok) {
+        throw new Error(json?.error?.message || `OpenRouter HTTP ${res.status}`);
+      }
+      const outText = json?.choices?.[0]?.message?.content;
+      if (!outText) throw new Error('Empty response from OpenRouter');
+      return outText;
     }
 
     async function transmit() {
+      if (isBusy) return;
       const box = document.getElementById('promptBox');
       const text = box.value.trim();
       if (!text && !pendingFile) return;
 
-      const gKey = localStorage.getItem('ik_gemini_key');
-      const oKey = localStorage.getItem('ik_openrouter_key');
-      if (!gKey && !oKey) { openSettings(); return; }
+      const gKey = (localStorage.getItem('ik_gemini_key') || '').trim();
+      const oKey = (localStorage.getItem('ik_openrouter_key') || '').trim();
+      if (!gKey && !oKey) {
+        openSettings();
+        return;
+      }
 
-      addBubble('user', text || `[Uploaded ${pendingFile.name}]`, pendingFile?.mimeType.startsWith('image/') ? pendingFile.dataUrl : null);
-      box.value = '';
+      isBusy = true;
+      const sendBtn = document.getElementById('sendBtn');
+      sendBtn.disabled = true;
+
+      const currentFile = pendingFile;
+      pendingFile = null;
       document.getElementById('attachBar').style.display = 'none';
+      document.getElementById('filePicker').value = '';
+
+      addBubble('user', text || `[Uploaded ${currentFile.name}]`, currentFile?.mimeType.startsWith('image/') ? currentFile.dataUrl : null);
+      box.value = '';
 
       if (text.toLowerCase().startsWith('/imagine ')) {
         const q = encodeURIComponent(text.slice(9));
         addBubble('bot', `Rendered visual output for: <strong>${text.slice(9)}</strong>`, `https://image.pollinations.ai/prompt/${q}?width=768&height=512&nologo=true`);
-        pendingFile = null;
+        isBusy = false;
+        sendBtn.disabled = false;
         return;
       }
 
-      const badge = document.getElementById('routerBadge');
-      let reply = '';
+      const loadingId = 'loading-' + Date.now();
+      addBubble('bot', '<em>[FAIRY COMPUTING RESPONSE...]</em>', null, loadingId);
 
-      try {
-        badge.textContent = 'ROUTING // GEMINI 3.8 FLASH';
-        reply = await queryGemini(text, 'gemini-3.8-flash', gKey);
-      } catch (e1) {
-        try {
-          badge.textContent = 'FAILOVER // GEMINI 3.5 FLASH-LITE';
-          reply = await queryGemini(text, 'gemini-3.5-flash-lite', gKey);
-        } catch (e2) {
+      const badge = document.getElementById('routerBadge');
+      const errors = [];
+      let reply = null;
+
+      if (gKey) {
+        for (const m of ['gemini-4-hydrogen', 'gemini-3.8-flash', 'gemini-3.5-flash-lite']) {
           try {
-            badge.textContent = 'FAILOVER // OPENROUTER FREE';
-            reply = await queryOpenRouter(text, oKey);
-          } catch (e3) {
-            reply = '⚠️ **All API Routes Offline.** Verify your Google AI Studio and OpenRouter keys in Settings.';
+            badge.textContent = `ROUTING // ${m.toUpperCase()}`;
+            reply = await queryGemini(text || 'Analyze the attached file.', m, gKey);
+            break;
+          } catch (err) {
+            errors.push(`${m}: ${err.message}`);
           }
         }
       }
 
+      if (!reply && oKey) {
+        try {
+          badge.textContent = 'FAILOVER // OPENROUTER FREE';
+          reply = await queryOpenRouter(text || 'Analyze the attached file.', oKey);
+        } catch (err) {
+          errors.push(`openrouter/free: ${err.message}`);
+        }
+      }
+
+      document.getElementById(loadingId)?.remove();
       badge.textContent = 'READY // MULTI-KEY FAILOVER';
-      pendingFile = null;
+      isBusy = false;
+      sendBtn.disabled = false;
+
+      if (!reply) {
+        addBubble('bot', `⚠️ **Request Failed:**<br><pre>${errors.join('\n')}</pre>Click <strong>⚙ API KEYS</strong> to verify your keys.`);
+        return;
+      }
 
       const tagMatch = reply.match(/<IK_DATA>([\s\S]*?)<\/IK_DATA>/);
       if (tagMatch) {
@@ -619,7 +657,7 @@ Whenever new deadlines, exam dates, or quiz/CA percentage marks are discovered o
         reply = reply.replace(/<IK_DATA>[\s\S]*?<\/IK_DATA>/, '').trim();
       }
 
-      history.push({ role: 'user', parts: [{ text }] }, { role: 'model', parts: [{ text: reply }] });
+      history.push({ role: 'user', parts: [{ text: text || `[File: ${currentFile?.name}]` }] }, { role: 'model', parts: [{ text: reply }] });
       addBubble('bot', marked.parse(reply));
     }
 
